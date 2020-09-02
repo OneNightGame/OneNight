@@ -1,0 +1,63 @@
+﻿@page "/room/{RoomCode}"
+
+@inject RoomManagerService roomManagerService;
+@inject UserDataService userDataService;
+
+@implements IDisposable
+
+<p>
+    Waiting in room: @RoomCode
+</p>
+
+<ul>
+    @foreach (string player in roomManagerService.GetRoomPlayers(RoomCode))
+    {
+        <li>@player</li>
+    }
+</ul>
+
+@if (@isHost)
+{
+    <button class="btn btn-primary" @onclick="StartGame">
+        Start game
+    </button>
+}
+
+@code {
+    [Parameter]
+    public string RoomCode { get; set; }
+
+    private bool isHost = false;
+
+    protected override void OnInitialized()
+    {
+        roomManagerService.NotifyUpdate += OnRoomUpdate;
+
+        if (userDataService.username == roomManagerService.GetRoomHost(RoomCode))
+        {
+            isHost = true;
+        }
+    }
+
+    public void Dispose()
+    {
+        roomManagerService.NotifyUpdate -= OnRoomUpdate;
+    }
+
+    private void OnRoomUpdate(string code)
+    {
+        if (code == RoomCode)
+        {
+            InvokeAsync(() =>
+            {
+                StateHasChanged();
+            });
+        }
+    }
+
+    private void StartGame()
+    {
+
+    }
+
+} 

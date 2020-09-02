@@ -1,0 +1,34 @@
+﻿@page "/JoinGame"
+Join Game
+
+@inject RoomManagerService roomManagerService;
+@inject UserDataService userDataService;
+
+@inject NavigationManager NavManager;
+
+
+<p>
+    Enter game code
+    <EditForm Model="gameCodeEnterModel" OnValidSubmit="HandleValidSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <InputText id="name" @bind-Value="gameCodeEnterModel.gameCode" />
+        <button type="submit">Join game</button>
+    </EditForm>
+</p>
+
+
+@code {
+    private GameCodeEnterModel gameCodeEnterModel = new GameCodeEnterModel();
+
+    private void HandleValidSubmit()
+    {
+        if (roomManagerService.JoinRoom(userDataService, gameCodeEnterModel.gameCode))
+        {     
+            NavManager.NavigateTo($"room/{gameCodeEnterModel.gameCode}");
+        } else
+        {
+            // TODO: Proper error message
+        }
+    }
+}

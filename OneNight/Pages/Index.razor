@@ -1,0 +1,62 @@
+﻿@page "/"
+
+@inject UsernameService usernameService;
+@inject UserDataService userDataService;
+@inject RoomManagerService roomManagerService;
+
+@inject NavigationManager NavManager
+
+<base href="/OneNightGame/" />
+
+<h1>One Night</h1>
+
+<p>Welcome to our online version of the One Night game.</p>
+
+
+@if (userNameEntered)
+{
+    <p>
+        <a href="JoinGame">Join Game</a>
+        <br />
+        <button class="btn btn-primary" @onclick="CreateGame">
+            Create game
+        </button>
+
+
+    </p>
+}
+else
+{
+    <p>
+        Please enter a username ...
+        <EditForm Model="usernameEnterModel" OnValidSubmit="HandleValidSubmit">
+            <DataAnnotationsValidator />
+            <ValidationSummary />
+            <InputText id="name" @bind-Value="usernameEnterModel.username" />
+            <button type="submit">Continue</button>
+        </EditForm>
+    </p>
+}
+
+@code {
+    private bool userNameEntered = false;
+    private UsernameEnterModel usernameEnterModel = new UsernameEnterModel();
+
+    private void HandleValidSubmit()
+    {
+        if (usernameService.IsOnline(usernameEnterModel.username))
+        {
+            // TODO: Proper error message
+            return;
+        }
+        usernameService.AddUser(usernameEnterModel.username);
+        userDataService.username = usernameEnterModel.username;
+        userNameEntered = true;
+    }
+
+    private void CreateGame()
+    {
+        string gameCode = roomManagerService.CreateRoom(userDataService);
+        NavManager.NavigateTo($"room/{gameCode}");
+    }
+}
