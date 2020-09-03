@@ -2,7 +2,7 @@
 
 @inject RoomManagerService roomManagerService;
 @inject UserDataService userDataService;
-
+@inject NavigationManager NavManager;
 @implements IDisposable
 
 <p>
@@ -57,7 +57,7 @@
 
     private void StartGame()
     {
-
+        NavManager.NavigateTo("/selectroles");
     }
 
 } 

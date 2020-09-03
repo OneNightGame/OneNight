@@ -30,7 +30,7 @@ namespace OneNight
             services.AddServerSideBlazor();
             services.AddSingleton<RoomManagerService>();
             services.AddSingleton<UsernameService>();
-
+            services.AddSingleton<RoleManagerService>();
             services.AddScoped<UserDataService>();
         }
 
